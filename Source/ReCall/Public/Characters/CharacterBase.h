@@ -27,21 +27,27 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+	//第三人称使用相机臂
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* CameraComp;
 
-	UPROPERTY(VisibleAnywhere, Category = "Anim")
-	class UAnimCharacterBase* AnimCharacterBaseRef;
-
 	UPROPERTY(EditAnywhere, Category = "Setting")
 	bool bIsOpenThiredCamera;
 
-public:
-	
+	//动画
+	UPROPERTY(VisibleAnywhere, Category = "Anim")
+	class UAnimCharacterBase* AnimCharacterBaseRef;
 
+private:
+	class ATickCamera* TickCameraRef;
+
+public:
+	FORCEINLINE ATickCamera* GetTickCameraRef() { return TickCameraRef; }
+
+	FORCEINLINE void SetTickCameraRef(ATickCamera* Ref) { TickCameraRef = Ref; }
 private:
 	//移动相关
 	void MoveForward(float Value);
