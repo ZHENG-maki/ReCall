@@ -58,4 +58,8 @@ private:
 
 	void StartJump();
 
+	void OnLeftShift();
+
+	void OnEndLeftShift();
+
 };

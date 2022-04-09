@@ -70,6 +70,9 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacterBase::PrepareJump);
     PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacterBase::StartJump);
+
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ACharacterBase::OnLeftShift);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &ACharacterBase::OnEndLeftShift);
 }
 
 void ACharacterBase::MoveForward(float Value)
@@ -119,5 +122,15 @@ void ACharacterBase::StartJump()
 
     AnimCharacterBaseRef->bIsJump = false;
     Jump();
+}
+
+void ACharacterBase::OnLeftShift()
+{
+    GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+}
+
+void ACharacterBase::OnEndLeftShift()
+{
+    GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 }
  
