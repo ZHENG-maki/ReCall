@@ -11,6 +11,7 @@
 #include "Animation/AnimSequence.h"
 #include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GamePlay/DoorInteract.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -37,6 +38,9 @@ ACharacterBase::ACharacterBase()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
     CameraComp->bUsePawnControlRotation = false;
+
+    InteractItemObj = EInteractItem::EII_None;
+    InteractRef = nullptr;
 }
 
 void ACharacterBase::BeginPlay()
@@ -73,6 +77,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ACharacterBase::OnLeftShift);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ACharacterBase::OnEndLeftShift);
+
+    PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ACharacterBase::OnInteract);
 }
 
 void ACharacterBase::MoveForward(float Value)
@@ -126,11 +132,33 @@ void ACharacterBase::StartJump()
 
 void ACharacterBase::OnLeftShift()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+    GetCharacterMovement()->MaxWalkSpeed = 190.0f;
 }
 
 void ACharacterBase::OnEndLeftShift()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 150.0f;
+    GetCharacterMovement()->MaxWalkSpeed = 95.0f;
+}
+
+void ACharacterBase::OnInteract()
+{
+    switch (InteractItemObj)
+    {
+    case EInteractItem::EII_None:
+        break;
+    case EInteractItem::EII_Door:
+    {
+        if (InteractRef)
+        {
+            if (Cast<ADoorInteract>(InteractRef))
+            {
+                Cast<ADoorInteract>(InteractRef)->OnInteract();
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
 }
  
