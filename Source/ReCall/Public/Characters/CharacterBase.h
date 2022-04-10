@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GamePlay/Interact.h"
 #include "CharacterBase.generated.h"
 
 UCLASS()
@@ -41,6 +42,13 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Anim")
 	class UAnimCharacterBase* AnimCharacterBaseRef;
 
+	//交互
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
+	EInteractItem InteractItemObj;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
+	class AInteract* InteractRef;
+
 private:
 	class ATickCamera* TickCameraRef;
 
@@ -61,5 +69,8 @@ private:
 	void OnLeftShift();
 
 	void OnEndLeftShift();
+	
+	//交互
+	void OnInteract();
 
 };
