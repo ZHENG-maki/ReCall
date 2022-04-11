@@ -132,12 +132,12 @@ void ACharacterBase::StartJump()
 
 void ACharacterBase::OnLeftShift()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 190.0f;
+    GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 }
 
 void ACharacterBase::OnEndLeftShift()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 95.0f;
+    GetCharacterMovement()->MaxWalkSpeed = 150.0f;
 }
 
 void ACharacterBase::OnInteract()
