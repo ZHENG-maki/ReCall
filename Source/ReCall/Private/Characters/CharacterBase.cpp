@@ -41,12 +41,14 @@ ACharacterBase::ACharacterBase()
 
     InteractItemObj = EInteractItem::EII_None;
     InteractRef = nullptr;
+
+    SetActorRotation(FRotator::ZeroRotator);
 }
 
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
     if (!bIsOpenThiredCamera)
     {
         //GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -81,6 +83,17 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ACharacterBase::OnInteract);
 }
 
+void ACharacterBase::StopMovement()
+{
+	GetCharacterMovement()->DisableMovement();
+	GetCharacterMovement()->StopMovementImmediately();
+}
+
+void ACharacterBase::ResetMovement()
+{
+    GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+}
+
 void ACharacterBase::MoveForward(float Value)
 {
     if ((Controller != nullptr) && (Value != 0.0f))
@@ -113,9 +126,7 @@ void ACharacterBase::PrepareJump()
     }
     if (AnimCharacterBaseRef)
     {
-        //停止运动
-        GetCharacterMovement()->DisableMovement();
-        GetCharacterMovement()->StopMovementImmediately();
+        StopMovement();
 
         AnimCharacterBaseRef->bIsJump = true;
     }
@@ -124,7 +135,7 @@ void ACharacterBase::PrepareJump()
 
 void ACharacterBase::StartJump()
 {
-    GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+    ResetMovement();
 
     AnimCharacterBaseRef->bIsJump = false;
     Jump();

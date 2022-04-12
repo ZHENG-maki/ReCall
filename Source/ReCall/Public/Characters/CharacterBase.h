@@ -39,7 +39,7 @@ public:
 	bool bIsOpenThiredCamera;
 
 	//动画
-	UPROPERTY(VisibleAnywhere, Category = "Anim")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anim")
 	class UAnimCharacterBase* AnimCharacterBaseRef;
 
 	//交互
@@ -56,6 +56,12 @@ public:
 	FORCEINLINE ATickCamera* GetTickCameraRef() { return TickCameraRef; }
 
 	FORCEINLINE void SetTickCameraRef(ATickCamera* Ref) { TickCameraRef = Ref; }
+
+	UFUNCTION(BlueprintCallable)
+	void StopMovement();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetMovement();
 private:
 	//移动相关
 	void MoveForward(float Value);

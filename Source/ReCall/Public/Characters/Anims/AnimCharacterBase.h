@@ -28,6 +28,9 @@ public:
 	bool bIsJump;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anim | Info")
+	bool bIsBeginGame;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anim | Info")
 	class ACharacterBase* PlayerRef;
 
 public:
