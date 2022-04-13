@@ -43,11 +43,17 @@ ACharacterBase::ACharacterBase()
     InteractRef = nullptr;
 
     SetActorRotation(FRotator::ZeroRotator);
+
+    CurrentPlayerState = ECurrentPlayerState::EPS_None;
 }
 
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+    CurrentPlayerState = ECurrentPlayerState::EPS_Normal;
+
+    SetActorRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 
     if (!bIsOpenThiredCamera)
     {
@@ -65,22 +71,23 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    PlayerInputComponent->BindAxis("MoveForward", this, &ACharacterBase::MoveForward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &ACharacterBase::MoveRight);
+    
+	PlayerInputComponent->BindAxis("MoveForward", this, &ACharacterBase::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ACharacterBase::MoveRight);
 
-    if (bIsOpenThiredCamera)
-    {
-        PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-        PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-    }
+	if (bIsOpenThiredCamera)
+	{
+		PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+		PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	}
 
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacterBase::PrepareJump);
-    PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacterBase::StartJump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacterBase::PrepareJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacterBase::StartJump);
 
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ACharacterBase::OnLeftShift);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ACharacterBase::OnEndLeftShift);
 
-    PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ACharacterBase::OnInteract);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ACharacterBase::OnInteract);
 }
 
 void ACharacterBase::StopMovement()
@@ -96,7 +103,7 @@ void ACharacterBase::ResetMovement()
 
 void ACharacterBase::MoveForward(float Value)
 {
-    if ((Controller != nullptr) && (Value != 0.0f))
+    if ((Controller != nullptr) && (Value != 0.0f) && CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
     {
         const FRotator Rotation = Controller->GetControlRotation();
         const FRotator YawRotation(0, Rotation.Yaw, 0);  
@@ -108,7 +115,7 @@ void ACharacterBase::MoveForward(float Value)
 
 void ACharacterBase::MoveRight(float Value)
 {
-    if ((Controller != nullptr) && (Value != 0.0f))
+    if ((Controller != nullptr) && (Value != 0.0f) && CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
     {
         const FRotator Rotation = Controller->GetControlRotation();
         const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -120,35 +127,46 @@ void ACharacterBase::MoveRight(float Value)
 
 void ACharacterBase::PrepareJump()
 {
-    if (Cast<UAnimCharacterBase>(GetMesh()->GetAnimInstance()))
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
     {
-        AnimCharacterBaseRef = Cast<UAnimCharacterBase>(GetMesh()->GetAnimInstance());
-    }
-    if (AnimCharacterBaseRef)
-    {
-        StopMovement();
+		if (Cast<UAnimCharacterBase>(GetMesh()->GetAnimInstance()))
+		{
+			AnimCharacterBaseRef = Cast<UAnimCharacterBase>(GetMesh()->GetAnimInstance());
+		}
+		if (AnimCharacterBaseRef)
+		{
+			StopMovement();
 
-        AnimCharacterBaseRef->bIsJump = true;
+			AnimCharacterBaseRef->bIsJump = true;
+		}
     }
-
 }
 
 void ACharacterBase::StartJump()
 {
-    ResetMovement();
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    {
+		ResetMovement();
 
-    AnimCharacterBaseRef->bIsJump = false;
-    Jump();
+		AnimCharacterBaseRef->bIsJump = false;
+		Jump();
+    }    
 }
 
 void ACharacterBase::OnLeftShift()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    {
+        GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+    }
 }
 
 void ACharacterBase::OnEndLeftShift()
 {
-    GetCharacterMovement()->MaxWalkSpeed = 150.0f;
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    {
+        GetCharacterMovement()->MaxWalkSpeed = 150.0f;
+    }
 }
 
 void ACharacterBase::OnInteract()

@@ -7,6 +7,15 @@
 #include "GamePlay/Interact.h"
 #include "CharacterBase.generated.h"
 
+UENUM(BlueprintType)
+enum class ECurrentPlayerState : uint8
+{
+	EPS_None,
+	EPS_Normal,
+	EPS_PlayMontage,
+	EPS_Dead
+};
+
 UCLASS()
 class RECALL_API ACharacterBase : public ACharacter
 {
@@ -48,6 +57,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
 	class AInteract* InteractRef;
+
+	//状态
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	ECurrentPlayerState CurrentPlayerState;
 
 private:
 	class ATickCamera* TickCameraRef;

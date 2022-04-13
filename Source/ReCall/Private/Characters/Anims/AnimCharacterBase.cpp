@@ -9,8 +9,6 @@
 void UAnimCharacterBase::NativeInitializeAnimation()
 {
 	PlayerRef = Cast<ACharacterBase>(TryGetPawnOwner());
-
-	bIsBeginGame = true;
 }
 
 void UAnimCharacterBase::UpdataAnimInfo()
