@@ -13,7 +13,6 @@ enum class ECurrentPlayerState : uint8
 	EPS_None,
 	EPS_Normal,
 	EPS_PlayMontage,
-	EPS_Equip,
 	EPS_Dead
 };
 
@@ -62,13 +61,6 @@ public:
 	//状态
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	ECurrentPlayerState CurrentPlayerState;
-
-	//武器
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact|Weapon")
-	class AWeaponInteract* EquipWeaponRef;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact|Weapon")
-	AWeaponInteract* OverlapWeaponRef;
 
 private:
 	class ATickCamera* TickCameraRef;

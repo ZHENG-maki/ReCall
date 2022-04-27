@@ -11,8 +11,7 @@ enum class EInteractItem : uint8
 {
 	EII_None,
 	EII_Door,
-	EII_Chair,
-	EII_Weapon
+	EII_Chair
 };
 
 UCLASS()
