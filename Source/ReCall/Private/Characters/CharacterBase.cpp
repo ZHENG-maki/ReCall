@@ -12,6 +12,7 @@
 #include "TimerManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GamePlay/DoorInteract.h"
+#include "GamePlay/InteractItem/WeaponInteract.h"
 
 ACharacterBase::ACharacterBase()
 {

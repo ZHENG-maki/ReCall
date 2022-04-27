@@ -23,6 +23,7 @@ void AChairInteract::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AAct
 	if (PlayerRef)
 	{
 		PlayerRef->InteractItemObj = EInteractItem::EII_None;
+		PlayerRef->InteractRef = nullptr;
 	}
 }
 
