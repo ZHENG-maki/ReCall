@@ -12,7 +12,8 @@ enum class EInteractItem : uint8
 	EII_None,
 	EII_Door,
 	EII_Chair,
-	EII_Weapon
+	EII_Weapon,
+	EII_DoubleDoor
 };
 
 UCLASS()
@@ -51,4 +52,5 @@ public:
 
 	UFUNCTION()
 	virtual void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 };

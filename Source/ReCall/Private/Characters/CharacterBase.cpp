@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GamePlay/DoorInteract.h"
 #include "GamePlay/InteractItem/WeaponInteract.h"
+#include "GamePlay/InteractItem/DoubleDoorInteract.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -187,6 +188,25 @@ void ACharacterBase::OnInteract()
         }
         break;
     }
+    case EInteractItem::EII_Chair:
+    {
+        if (InteractRef)
+        {
+
+        }
+        break;
+    }
+	case EInteractItem::EII_DoubleDoor:
+	{
+        if (InteractRef)
+        {
+			if (Cast<ADoubleDoorInteract>(InteractRef))
+			{
+				Cast<ADoubleDoorInteract>(InteractRef)->OnInteract();
+			}
+        }
+		break;
+	}
     default:
         break;
     }
