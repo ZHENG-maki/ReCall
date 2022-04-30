@@ -6,6 +6,7 @@
 #include "Characters/CharacterBase.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AWeaponInteract::AWeaponInteract()
 {
@@ -42,6 +43,15 @@ void AWeaponInteract::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AAc
 void AWeaponInteract::OnInteract_Implementation()
 {
 	TipsComp->SetVisibility(false);
+
+	if (PlayerRef->CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+	{
+		EquipWeapon();
+	}
+	else if(PlayerRef->CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
+	{
+		UnloadWeapon();
+	}
 }
 
 void AWeaponInteract::EquipWeapon()
@@ -60,6 +70,12 @@ void AWeaponInteract::EquipWeapon()
 
 void AWeaponInteract::UnloadWeapon()
 {
+	if (PlayerRef && !PlayerRef->GetMovementComponent()->IsFalling() && PlayerRef->CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
+	{
+		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		SetActorRotation(FRotator(0.0f));
+		SetActorScale3D(FVector(1.0f));
+	}
 }
 
 

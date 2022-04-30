@@ -15,6 +15,7 @@
 #include "GamePlay/InteractItem/WeaponInteract.h"
 #include "GamePlay/InteractItem/DoubleDoorInteract.h"
 #include "Characters/Enemy/EnemyCharacterBase.h"
+#include "GamePlay/InteractItem/WeaponInteract.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -106,7 +107,7 @@ void ACharacterBase::ResetMovement()
 
 void ACharacterBase::MoveForward(float Value)
 {
-    if ((Controller != nullptr) && (Value != 0.0f) && CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    if ((Controller != nullptr) && (Value != 0.0f) && (CurrentPlayerState == ECurrentPlayerState::EPS_Normal || CurrentPlayerState == ECurrentPlayerState::EPS_Equip))
     {
         const FRotator Rotation = Controller->GetControlRotation();
         const FRotator YawRotation(0, Rotation.Yaw, 0);  
@@ -118,7 +119,7 @@ void ACharacterBase::MoveForward(float Value)
 
 void ACharacterBase::MoveRight(float Value)
 {
-    if ((Controller != nullptr) && (Value != 0.0f) && CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    if ((Controller != nullptr) && (Value != 0.0f) && (CurrentPlayerState == ECurrentPlayerState::EPS_Normal || CurrentPlayerState == ECurrentPlayerState::EPS_Equip))
     {
         const FRotator Rotation = Controller->GetControlRotation();
         const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -130,7 +131,7 @@ void ACharacterBase::MoveRight(float Value)
 
 void ACharacterBase::PrepareJump()
 {
-    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal || CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
     {
 		if (Cast<UAnimCharacterBase>(GetMesh()->GetAnimInstance()))
 		{
@@ -147,7 +148,7 @@ void ACharacterBase::PrepareJump()
 
 void ACharacterBase::StartJump()
 {
-    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal || CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
     {
 		ResetMovement();
 
@@ -158,7 +159,7 @@ void ACharacterBase::StartJump()
 
 void ACharacterBase::OnLeftShift()
 {
-    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal || CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
     {
         GetCharacterMovement()->MaxWalkSpeed = 300.0f;
     }
@@ -166,7 +167,7 @@ void ACharacterBase::OnLeftShift()
 
 void ACharacterBase::OnEndLeftShift()
 {
-    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal)
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Normal || CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
     {
         GetCharacterMovement()->MaxWalkSpeed = 150.0f;
     }
@@ -193,7 +194,10 @@ void ACharacterBase::OnInteract()
     {
         if (InteractRef)
         {
-
+			if (Cast<AWeaponInteract>(InteractRef))
+			{
+				Cast<AWeaponInteract>(InteractRef)->OnInteract();
+			}
         }
         break;
     }
