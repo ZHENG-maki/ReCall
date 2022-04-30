@@ -194,10 +194,7 @@ void ACharacterBase::OnInteract()
     {
         if (InteractRef)
         {
-			if (Cast<AWeaponInteract>(InteractRef))
-			{
-				Cast<AWeaponInteract>(InteractRef)->OnInteract();
-			}
+			
         }
         break;
     }
@@ -210,6 +207,17 @@ void ACharacterBase::OnInteract()
 				Cast<ADoubleDoorInteract>(InteractRef)->OnInteract();
 			}
         }
+		break;
+	}
+	case EInteractItem::EII_Weapon:
+	{
+		if (InteractRef)
+		{
+			if (Cast<AWeaponInteract>(InteractRef))
+			{
+				Cast<AWeaponInteract>(InteractRef)->OnInteract();
+			}
+		}
 		break;
 	}
     default:

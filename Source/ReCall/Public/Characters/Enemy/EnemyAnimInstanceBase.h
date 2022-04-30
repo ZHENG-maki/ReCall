@@ -21,6 +21,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anim | Info")
 		float Speed;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anim")
 	class AEnemyCharacterBase* EnemyRef;
 
 public:

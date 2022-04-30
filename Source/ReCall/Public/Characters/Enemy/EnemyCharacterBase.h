@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 		class UAnimMontage* AttackMontage;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+		bool bAttackVolumeOverlapping;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -74,6 +77,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+		void AttackEnd();
 
 	UFUNCTION(BlueprintCallable)
 		void ActiveAttackCollision();

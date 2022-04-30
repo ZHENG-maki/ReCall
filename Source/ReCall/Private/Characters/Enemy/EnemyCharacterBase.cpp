@@ -73,6 +73,7 @@ void AEnemyCharacterBase::OnAttackVolumeOverlapBegin(UPrimitiveComponent* Overla
 		ACharacterBase* Player = Cast<ACharacterBase>(OtherActor);
 		if (Player)
 		{
+			bAttackVolumeOverlapping = true;
 			Attack();
 		}
 	}
@@ -85,6 +86,7 @@ void AEnemyCharacterBase::OnAttackVolumeOverlapEnd(UPrimitiveComponent* Overlapp
 		ACharacterBase* Player = Cast<ACharacterBase>(OtherActor);
 		if (Player)
 		{
+			bAttackVolumeOverlapping = false;
 			if (CurrentEnemyState != ECurrentEnemyState::EEMS_Attacking)
 			{
 
@@ -110,6 +112,7 @@ void AEnemyCharacterBase::OnAttackCollisionOverlapBegin(UPrimitiveComponent* Ove
 
 void AEnemyCharacterBase::OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+
 }
 
 void AEnemyCharacterBase::Attack()
@@ -132,6 +135,19 @@ void AEnemyCharacterBase::Attack()
 				AnimInstance->Montage_Play(AttackMontage, PlayRate);
 				AnimInstance->Montage_JumpToSection(FName(*SectionName), AttackMontage);
 			}
+		}
+	}
+}
+
+void AEnemyCharacterBase::AttackEnd()
+{
+	if (CurrentEnemyState != ECurrentEnemyState::EEMS_Dead)
+	{
+		CurrentEnemyState = ECurrentEnemyState::EEMS_Idle;
+
+		if (bAttackVolumeOverlapping && CurrentEnemyState != ECurrentEnemyState::EEMS_Dead)
+		{
+			Attack();
 		}
 	}
 }

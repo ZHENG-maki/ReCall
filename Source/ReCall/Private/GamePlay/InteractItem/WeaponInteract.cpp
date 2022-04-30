@@ -25,7 +25,7 @@ void AWeaponInteract::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, A
 
 	if (PlayerRef)
 	{
-		PlayerRef->InteractItemObj = EInteractItem::EII_Chair;
+		PlayerRef->InteractItemObj = EInteractItem::EII_Weapon;
 		PlayerRef->InteractRef = this;
 	}
 }
