@@ -6,6 +6,14 @@
 #include "GameFramework/Character.h"
 #include "EnemyCharacterBase.generated.h"
 
+UENUM(BlueprintType)
+enum class ECurrentEnemyState :uint8
+{
+	EEMS_Idle,
+	EEMS_Attacking,
+	EEMS_Dead			
+};
+
 UCLASS()
 class RECALL_API AEnemyCharacterBase : public ACharacter
 {
@@ -16,6 +24,30 @@ public:
 	AEnemyCharacterBase();
 
 	class AAIControllerBase* AIControllerBaseRef;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+		class USphereComponent* AttackVolume;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Info")
+		ECurrentEnemyState CurrentEnemyState;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack")
+		class UBoxComponent* AttackCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		float EnemyDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		TSubclassOf<UDamageType> DamageTypeClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+		class UAnimMontage* AttackMontage;
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,4 +60,29 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+		virtual void OnAttackVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		virtual void OnAttackVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+		void OnAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintCallable)
+	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+		void ActiveAttackCollision();
+
+	UFUNCTION(BlueprintCallable)
+		void DeactiveAttackCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void Die();
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 };

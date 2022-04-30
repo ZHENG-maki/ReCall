@@ -14,6 +14,7 @@
 #include "GamePlay/DoorInteract.h"
 #include "GamePlay/InteractItem/WeaponInteract.h"
 #include "GamePlay/InteractItem/DoubleDoorInteract.h"
+#include "Characters/Enemy/EnemyCharacterBase.h"
 
 ACharacterBase::ACharacterBase()
 {

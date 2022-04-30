@@ -70,6 +70,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact|Weapon")
 	AWeaponInteract* OverlapWeaponRef;
 
+	//攻击
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack")
+		class UAnimMontage* AttackMontage;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+		class AEnemyCharacterBase* AttackTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float PlayDamage;
+
 private:
 	class ATickCamera* TickCameraRef;
 
