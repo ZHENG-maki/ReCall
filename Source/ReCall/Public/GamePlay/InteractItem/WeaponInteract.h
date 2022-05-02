@@ -19,6 +19,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
 	FString SocketName;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon|Attack")
+		class UBoxComponent* AttackCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Attack")
+		float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon|Attack")
+		TSubclassOf<UDamageType> DamageTypeClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon|Attack")
+		class AController* WeaponOwner;
 	
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -35,4 +47,20 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UnloadWeapon();
+
+	void ActiveDisplayMeshCollision();
+
+	void DeactiveDisplayMeshCollision();
+
+	UFUNCTION()
+		void OnAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintCallable)
+		void ActiveAttackCollision();
+
+	UFUNCTION(BlueprintCallable)
+		void DeactiveAttackCollision();
 };

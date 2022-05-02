@@ -80,6 +80,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	float PlayDamage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player|Info")
+		float MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Info")
+		float Health;
+
 private:
 	class ATickCamera* TickCameraRef;
 
@@ -116,5 +122,12 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 		void AttackEnd();
+
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	void Die();
+
+	UFUNCTION(BlueprintCallable)
+		void DeathEnd();
 
 };

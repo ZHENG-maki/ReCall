@@ -49,6 +49,9 @@ ACharacterBase::ACharacterBase()
     SetActorRotation(FRotator::ZeroRotator);
 
     CurrentPlayerState = ECurrentPlayerState::EPS_None;
+
+    MaxHealth = 3;
+    Health = MaxHealth;
 }
 
 void ACharacterBase::BeginPlay()
@@ -255,5 +258,26 @@ void ACharacterBase::Attack()
 void ACharacterBase::AttackEnd()
 {
     CurrentPlayerState = ECurrentPlayerState::EPS_Equip;
+}
+
+float ACharacterBase::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (--Health <= 0.0f)
+	{
+		Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+		Die();
+	}
+
+	return Health;
+}
+
+void ACharacterBase::Die()
+{
+    CurrentPlayerState = ECurrentPlayerState::EPS_Dead;
+}
+
+void ACharacterBase::DeathEnd()
+{
+
 }
  

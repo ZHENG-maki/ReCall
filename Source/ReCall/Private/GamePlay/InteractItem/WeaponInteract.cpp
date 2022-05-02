@@ -7,10 +7,19 @@
 #include "Components/WidgetComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Characters/Enemy/EnemyCharacterBase.h"
 
 AWeaponInteract::AWeaponInteract()
 {
 	SocketName = "EquipWeaponSocket";
+
+	AttackCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackCollision"));
+	AttackCollision->SetupAttachment(GetRootComponent());
+	DeactiveAttackCollision();
+
+	Damage = 20.0f;
 }
 
 void AWeaponInteract::Tick(float DeltaTime)
@@ -28,6 +37,9 @@ void AWeaponInteract::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, A
 		PlayerRef->InteractItemObj = EInteractItem::EII_Weapon;
 		PlayerRef->InteractRef = this;
 	}
+
+	AttackCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponInteract::OnAttackCollisionOverlapBegin);
+	AttackCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponInteract::OnAttackCollisionOverlapEnd);
 }
 
 void AWeaponInteract::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -76,6 +88,53 @@ void AWeaponInteract::UnloadWeapon()
 		SetActorRotation(FRotator(0.0f));
 		SetActorScale3D(FVector(1.0f));
 	}
+}
+
+void AWeaponInteract::ActiveDisplayMeshCollision()
+{
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	MeshComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldStatic);
+	MeshComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	MeshComp->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+}
+
+void AWeaponInteract::DeactiveDisplayMeshCollision()
+{
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AWeaponInteract::OnAttackCollisionOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		AEnemyCharacterBase* BaseEnemy = Cast<AEnemyCharacterBase>(OtherActor);
+		if (BaseEnemy)
+		{
+			
+			if (DamageTypeClass)
+			{
+				AController* temp = UGameplayStatics::GetPlayerController(this, 0);
+				UGameplayStatics::ApplyDamage(BaseEnemy, Damage, temp, this, DamageTypeClass);
+			}
+		}
+	}
+}
+
+void AWeaponInteract::OnAttackCollisionOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+}
+
+void AWeaponInteract::ActiveAttackCollision()
+{
+	AttackCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AttackCollision->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	AttackCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	AttackCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+}
+
+void AWeaponInteract::DeactiveAttackCollision()
+{
+	AttackCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 
