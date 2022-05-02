@@ -65,6 +65,9 @@ void AEnemyCharacterBase::BeginPlay()
 	
 	AIControllerBaseRef = Cast<AAIControllerBase>(GetController());
 
+	AttackVolume->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackVolumeOverlapBegin);
+	AttackVolume->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackVolumeOverlapEnd);
+
 	AttackCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackCollisionOverlapBegin);
 	AttackCollision->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackCollisionOverlapEnd);
 
@@ -212,6 +215,7 @@ float AEnemyCharacterBase::TakeDamage(float Damage, FDamageEvent const& DamageEv
 
 void AEnemyCharacterBase::OnSightPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
+	/*
 	if (!AIControllerBaseRef->bIsChaseTarget)
 	{
 		for (auto Actor : UpdatedActors)
@@ -220,5 +224,6 @@ void AEnemyCharacterBase::OnSightPerceptionUpdated(const TArray<AActor*>& Update
 				AIControllerBaseRef->ChaseTarget(Cast<ACharacterBase>(Actor));
 		}
 	}
+	*/
 }
 
