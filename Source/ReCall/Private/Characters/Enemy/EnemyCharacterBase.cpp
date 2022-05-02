@@ -9,6 +9,9 @@
 #include "Components/SphereComponent.h"
 #include "Characters/CharacterBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISense_Sight.h"
 
 // Sets default values
 AEnemyCharacterBase::AEnemyCharacterBase()
@@ -36,6 +39,23 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 	EnemyDamage = 10.0f;
 
 	CurrentEnemyState = ECurrentEnemyState::EEMS_Idle;
+
+	AIPerceptionCmp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionCmp"));
+
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
+
+	AIPerceptionCmp->ConfigureSense(*SightConfig);
+	//优先级，视觉优先
+	AIPerceptionCmp->SetDominantSense(UAISense_Sight::StaticClass());
+
+	if (AIPerceptionCmp)
+	{
+		SightConfig->SightRadius = 800.0f;
+		SightConfig->LoseSightRadius = 2000.0f;
+		SightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	}
+
+	//AIPerceptionCmp->OnPerceptionUpdated.AddDynamic(this, &AEnemyCharacterBase::OnSightPerceptionUpdated);
 }
 
 // Called when the game starts or when spawned
@@ -45,11 +65,12 @@ void AEnemyCharacterBase::BeginPlay()
 	
 	AIControllerBaseRef = Cast<AAIControllerBase>(GetController());
 
-	AttackVolume->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackVolumeOverlapBegin);
-	AttackVolume->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackVolumeOverlapEnd);
-
 	AttackCollision->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackCollisionOverlapBegin);
 	AttackCollision->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacterBase::OnAttackCollisionOverlapEnd);
+
+	//AIControllerBaseRef->Patrol();
+
+	StartLocation = GetActorLocation();
 }
 
 // Called every frame
@@ -187,5 +208,17 @@ float AEnemyCharacterBase::TakeDamage(float Damage, FDamageEvent const& DamageEv
 	}
 
 	return Health;
+}
+
+void AEnemyCharacterBase::OnSightPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
+{
+	if (!AIControllerBaseRef->bIsChaseTarget)
+	{
+		for (auto Actor : UpdatedActors)
+		{
+			if (Cast<ACharacterBase>(Actor))
+				AIControllerBaseRef->ChaseTarget(Cast<ACharacterBase>(Actor));
+		}
+	}
 }
 

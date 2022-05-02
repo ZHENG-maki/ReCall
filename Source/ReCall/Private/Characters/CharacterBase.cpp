@@ -92,6 +92,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ACharacterBase::OnEndLeftShift);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ACharacterBase::OnInteract);
+
+    PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ACharacterBase::AttackKeyDown);
 }
 
 void ACharacterBase::StopMovement()
@@ -223,5 +225,35 @@ void ACharacterBase::OnInteract()
     default:
         break;
     }
+}
+
+void ACharacterBase::AttackKeyDown()
+{
+    if (CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
+    {
+        Attack();
+    }
+}
+
+void ACharacterBase::Attack()
+{
+	if (CurrentPlayerState != ECurrentPlayerState::EPS_PlayMontage && !(GetMovementComponent()->IsFalling()) && CurrentPlayerState == ECurrentPlayerState::EPS_Equip)
+	{
+        CurrentPlayerState = ECurrentPlayerState::EPS_PlayMontage;
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (AnimInstance && AttackMontage)
+		{
+			const float PlayRate = FMath::RandRange(1.25f, 1.75f);
+            const FString SectionName = FString::FromInt(1);//FString::FromInt(FMath::RandRange(1, 1));
+			AnimInstance->Montage_Play(AttackMontage, PlayRate);
+			AnimInstance->Montage_JumpToSection(FName(*SectionName), AttackMontage);
+		}
+	}
+}
+
+void ACharacterBase::AttackEnd()
+{
+    CurrentPlayerState = ECurrentPlayerState::EPS_Equip;
 }
  

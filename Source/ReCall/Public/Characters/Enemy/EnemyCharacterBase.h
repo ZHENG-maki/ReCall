@@ -28,6 +28,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
 		class USphereComponent* AttackVolume;
 
+	UPROPERTY(VisibleAnywhere, Category = "Enemy|AIController")
+		class UAIPerceptionComponent* AIPerceptionCmp;
+
+	UPROPERTY(VisibleAnywhere, Category = "Enemy|AIController")
+		class UAISenseConfig_Sight* SightConfig;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
 		float Health;
 
@@ -51,6 +57,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
 		bool bAttackVolumeOverlapping;
+
+	UPROPERTY(EditAnywhere, Category = "Enemy|Anim|Montage")
+		UAnimMontage* DeathMontage;
+
+	FVector StartLocation; //初始的位置
 
 protected:
 	// Called when the game starts or when spawned
@@ -91,4 +102,7 @@ public:
 	void Die();
 
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION()
+		void OnSightPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 };

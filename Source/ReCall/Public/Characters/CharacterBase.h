@@ -110,4 +110,11 @@ private:
 	//交互
 	void OnInteract();
 
+	void AttackKeyDown();
+
+	void Attack();
+
+	UFUNCTION(BlueprintCallable)
+		void AttackEnd();
+
 };
