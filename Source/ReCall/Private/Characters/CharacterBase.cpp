@@ -16,6 +16,7 @@
 #include "GamePlay/InteractItem/DoubleDoorInteract.h"
 #include "Characters/Enemy/EnemyCharacterBase.h"
 #include "GamePlay/InteractItem/WeaponInteract.h"
+#include "GamePlay/InteractItem/ChairInteract.h"
 
 ACharacterBase::ACharacterBase()
 {
@@ -199,7 +200,10 @@ void ACharacterBase::OnInteract()
     {
         if (InteractRef)
         {
-			
+			if (Cast<AChairInteract>(InteractRef))
+			{
+				Cast<AChairInteract>(InteractRef)->OnInteract();
+			}
         }
         break;
     }

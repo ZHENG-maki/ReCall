@@ -14,7 +14,8 @@ enum class ECurrentPlayerState : uint8
 	EPS_Normal,
 	EPS_PlayMontage,
 	EPS_Equip,
-	EPS_Dead
+	EPS_Dead,
+	EPS_Sit
 };
 
 UCLASS()
