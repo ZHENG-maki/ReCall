@@ -40,13 +40,13 @@ public:
 
 public:
 	//第三人称使用相机臂
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera")
 	class USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Camera")
 	class UCameraComponent* CameraComp;
 
-	UPROPERTY(EditAnywhere, Category = "Setting")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setting")
 	bool bIsOpenThiredCamera;
 
 	//动画
@@ -113,6 +113,10 @@ private:
 	void OnLeftShift();
 
 	void OnEndLeftShift();
+
+	void AddYawInput(float Val);
+
+	void AddPitchInput(float Val);
 	
 	//交互
 	void OnInteract();

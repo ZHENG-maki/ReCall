@@ -83,11 +83,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACharacterBase::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACharacterBase::MoveRight);
 
-	if (bIsOpenThiredCamera)
-	{
-		PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-		PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	}
+	PlayerInputComponent->BindAxis("Turn", this, &ACharacterBase::AddYawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &ACharacterBase::AddPitchInput);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacterBase::PrepareJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacterBase::StartJump);
@@ -177,6 +174,24 @@ void ACharacterBase::OnEndLeftShift()
     {
         GetCharacterMovement()->MaxWalkSpeed = 150.0f;
     }
+}
+
+void ACharacterBase::AddYawInput(float Val)
+{
+	if (Val != 0.f && Controller && Controller->IsLocalPlayerController() && bIsOpenThiredCamera)
+	{
+		APlayerController* const PC = CastChecked<APlayerController>(Controller);
+		PC->AddYawInput(Val);
+	}
+}
+
+void ACharacterBase::AddPitchInput(float Val)
+{
+	if (Val != 0.f && Controller && Controller->IsLocalPlayerController() && bIsOpenThiredCamera)
+	{
+		APlayerController* const PC = CastChecked<APlayerController>(Controller);
+		PC->AddPitchInput(Val);
+	}
 }
 
 void ACharacterBase::OnInteract()
